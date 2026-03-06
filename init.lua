@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -256,6 +256,11 @@ rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added via a link or github org/name. To run setup automatically, use `opts = {}`
+
+  { 'nvim-tree/nvim-tree.lua' },
+  { 'akinsho/toggleterm.nvim', version = '*' },
+  { 'nvim-treesitter/nvim-treesitter-context' },
+
   { 'NMAC427/guess-indent.nvim', opts = {} },
 
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
@@ -950,6 +955,55 @@ require('lazy').setup({
     },
   },
 })
+
+-- Disable netrw (nvim-tree recommendation)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- NvimTree
+require('nvim-tree').setup {
+  view = {
+    width = 30,
+  },
+}
+
+-- ToggleTerm
+require('toggleterm').setup {
+  open_mapping = [[<c-`>]],
+  direction = 'horizontal',
+  size = 15,
+}
+
+-- Keymaps
+vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>')
+
+-- Switch terminals (1, 2, 3)
+vim.keymap.set('n', '<leader>t1', ':1ToggleTerm<CR>')
+vim.keymap.set('n', '<leader>t2', ':2ToggleTerm<CR>')
+vim.keymap.set('n', '<leader>t3', ':3ToggleTerm<CR>')
+
+-- Claude Code in right split (always open)
+vim.keymap.set('n', '<leader>cc', function()
+  vim.cmd 'vsplit'
+  vim.cmd 'wincmd l'
+  vim.cmd 'terminal claude'
+  vim.cmd 'startinsert'
+end)
+
+-- Navigate between windows
+vim.keymap.set('n', '<C-h>', '<C-w>h')
+vim.keymap.set('n', '<C-l>', '<C-w>l')
+vim.keymap.set('n', '<C-j>', '<C-w>j')
+vim.keymap.set('n', '<C-k>', '<C-w>k')
+
+-- Terminal escape
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
+
+-- Disable auto comment on new line
+vim.opt.formatoptions:remove { 'r', 'o' }
+
+-- Separate clipboard from yank
+vim.opt.clipboard = ''
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
